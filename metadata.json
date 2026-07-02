@@ -1,0 +1,6 @@
+{
+  "name": "Water Savior",
+  "description": "An interactive river cleanup game inspired by charity: water, featuring difficulty modes, obstacle evasion, milestone tracking, sound effects, and impact metrics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

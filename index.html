@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Water Savior - charity: water</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&family=Inter:wght@400;500;700;900&family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    
+    <!-- Live Tailwind CSS v4 Browser Compiler (Zero-build client compilation) -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <!-- Custom Tailwind Configuration & Core Layout Styles -->
+    <style type="text/tailwindcss">
+      @theme {
+        --font-sans: "Poppins", "Inter", ui-sans-serif, system-ui, sans-serif;
+        --font-display: "Space Grotesk", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+
+      @layer utilities {
+        .animate-float {
+          animation: float 4s ease-in-out infinite;
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+      }
+
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* Screen setups */
+      .screen {
+        display: none;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      /* Earthquake Shake Animation */
+      @keyframes shake {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        10% { transform: translate(-4px, -2px) rotate(-1deg); }
+        20% { transform: translate(-6px, 0px) rotate(1deg); }
+        30% { transform: translate(0px, 4px) rotate(0deg); }
+        40% { transform: translate(4px, -2px) rotate(1deg); }
+        50% { transform: translate(-2px, 4px) rotate(-1deg); }
+        60% { transform: translate(-6px, 2px) rotate(0deg); }
+        70% { transform: translate(4px, 2px) rotate(1deg); }
+        80% { transform: translate(-2px, -4px) rotate(-1deg); }
+        90% { transform: translate(4px, 4px) rotate(0deg); }
+      }
+      .earthquake-active {
+        animation: shake 0.15s ease-in-out infinite;
+      }
+
+      /* Tornado Spin Animation */
+      @keyframes spin-tornado {
+        0% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(0.9); }
+        100% { transform: rotate(360deg) scale(1); }
+      }
+      .tornado-active {
+        animation: spin-tornado 4s linear infinite;
+      }
+
+      /* Lightning shock flicker overlay keyframe */
+      @keyframes shock-flicker {
+        0%, 100% { opacity: 0; }
+        10%, 30%, 50%, 70% { opacity: 0.85; background-color: rgba(253, 224, 71, 0.45); }
+        20%, 40%, 60%, 80% { opacity: 0.1; background-color: transparent; }
+      }
+      .lightning-flash {
+        animation: shock-flicker 1.8s ease-out infinite;
+      }
+
+      /* Factory Smoke Fog animation */
+      @keyframes drift-fog {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .smoke-fog-overlay {
+        background: radial-gradient(circle, rgba(40,40,45,0.96) 20%, rgba(20,20,22,0.98) 80%);
+        background-size: 200% 200%;
+        animation: drift-fog 10s ease infinite;
+      }
+
+      /* Scrollbar styling for mission signals log */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Confetti particles keyframes */
+      @keyframes fall {
+        0% {
+          transform: translateY(-20px) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(450px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .confetti-particle {
+        position: absolute;
+        width: 10px;
+        height: 16px;
+        border-radius: 2px;
+        animation: fall 1.5s linear infinite;
+        pointer-events: none;
+        z-index: 5;
+      }
+    </style>
+  </head>
+  <body class="bg-[#050b2d] font-sans text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- Skip link (visually hidden; becomes visible when focused) -->
+    <a href="#mainContent" class="sr-only sr-only-focusable">Skip to main content</a>
+
+    <!-- Global Layout Wrapper -->
+    <div class="flex-1 flex flex-col justify-center items-center py-6">
+
+      <!-- ============================================== -->
+      <!-- SCREEN 1: TITLE/HOME SCREEN -->
+      <!-- ============================================== -->
+      <div id="titleScreen" class="screen active flex-1 flex flex-col items-center justify-center w-full max-w-md px-4 relative">
+        <div class="w-full bg-[#0a1558] text-white border-4 border-white/10 rounded-2xl shadow-2xl overflow-hidden relative">
+          
+          <!-- Repeating linear grid overlay -->
+          <div 
+            class="absolute inset-0 opacity-5 pointer-events-none select-none z-0" 
+            style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, white 11px, white 12px);"
+          ></div>
+
+          <div class="relative z-10 p-8 text-center flex flex-col items-center gap-6">
+            <p class="text-[10px] font-black uppercase tracking-widest text-[#ffc907]">
+              charity: water campus edition
+            </p>
+            
+            <div 
+              class="flex items-center justify-center w-24 h-24 border border-white/10 rounded-full bg-black/30 text-5xl shadow-lg select-none animate-float"
+              aria-hidden="true"
+            >
+              💧
+            </div>
+
+            <div>
+              <h1 class="text-4xl sm:text-5xl font-extrabold font-display tracking-tight leading-none uppercase">
+                Water <span class="text-[#ffc907]">Savior</span>
+              </h1>
+              <p class="text-sky-200/75 text-xs mt-3 max-w-xs mx-auto leading-relaxed">
+                Tap to clean rivers, earn impact points, and unlock a local campus reward.
+              </p>
+            </div>
+
+            <!-- Transformation preview banner -->
+            <div class="w-full grid grid-cols-3 items-center gap-2 bg-black/30 border border-white/5 p-3 rounded-lg text-xs font-bold select-none">
+              <div class="flex items-center justify-center gap-1">
+                <span class="text-amber-400">🍂</span>
+                <span class="text-sky-200/90 font-bold">Polluted</span>
+              </div>
+              <div class="text-white/20 text-center font-bold">&rarr;</div>
+              <div class="flex items-center justify-center gap-1">
+                <span class="text-cyan-400">🌊</span>
+                <span class="text-[#12b7e8] font-bold">Clean</span>
+              </div>
+            </div>
+
+            <button
+              id="startBtn"
+              type="button"
+              class="w-full py-4 px-6 bg-[#ffc907] hover:bg-[#ffc907]/90 text-[#0a1558] font-black uppercase rounded-lg shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer text-sm tracking-wide select-none focus:outline-none focus:ring-4 focus:ring-amber-300"
+              aria-label="Start Mission"
+            >
+              Start Mission
+            </button>
+
+            <p class="text-[9px] text-white/40 font-bold uppercase tracking-widest">
+              Powered by charity: water
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 2: MISSION SELECTION SCREEN -->
+      <!-- ============================================== -->
+      <div id="missionScreen" class="screen flex-1 flex flex-col items-center justify-center w-full max-w-lg px-4">
+        <div class="w-full bg-[#0a1558] text-white border-4 border-white/10 rounded-2xl shadow-2xl overflow-hidden p-6 sm:p-8 relative">
+          
+          <div class="bg-[#111f71] text-white p-5 rounded-xl text-center mb-6 border border-white/10">
+            <p class="text-[10px] font-black uppercase tracking-widest text-sky-300">
+              Select mission
+            </p>
+            <h2 class="text-2xl font-extrabold font-display uppercase tracking-tight mt-1">
+              Choose Your River
+            </h2>
+          </div>
+
+          <div class="flex flex-col gap-4" role="list" aria-label="Mission difficulty options">
+            <!-- Easy Level -->
+            <article class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border border-white/10 rounded-xl bg-[#13277d]/90 hover:bg-[#13277d] transition-all">
+              <div class="flex-1">
+                <h3 class="text-base font-bold text-white flex items-center gap-1.5 font-display">
+                  🛡️ Campus Creek 
+                  <span class="text-[9px] px-2 py-0.5 bg-emerald-500/10 text-emerald-300 rounded-full font-black uppercase tracking-wider border border-emerald-500/20">Easy</span>
+                </h3>
+                <p class="text-sky-200/60 text-xs mt-1 leading-relaxed">
+                  Focus on picking trash while avoiding hazardous obstacles (tapping obstacles loses points).
+                </p>
+              </div>
+              <button
+                data-level="basic"
+                type="button"
+                class="w-full sm:w-auto px-4 py-2 bg-[#ffc907] hover:bg-[#ffc907]/90 text-[#0a1558] font-black uppercase text-xs rounded-lg transition-colors cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#ffc907]"
+              >
+                Choose Easy
+              </button>
+            </article>
+
+            <!-- Medium Level -->
+            <article class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border border-white/10 rounded-xl bg-[#13277d]/90 hover:bg-[#13277d] transition-all">
+              <div class="flex-1">
+                <h3 class="text-base font-bold text-white flex items-center gap-1.5 font-display">
+                  ⚡ City River Run 
+                  <span class="text-[9px] px-2 py-0.5 bg-amber-500/10 text-amber-300 rounded-full font-black uppercase tracking-wider border border-amber-500/20">Medium</span>
+                </h3>
+                <p class="text-sky-200/60 text-xs mt-1 leading-relaxed">
+                  Easy mode + 4 Complex Hurdles: 🌩️ Lightning shock (5s lock), 🫨 Earthquake shake (5s movement), 🌪️ Tornado (5s item spin), and 💨 Factory Smoke (5s zero vision).
+                </p>
+              </div>
+              <button
+                data-level="medium"
+                type="button"
+                class="w-full sm:w-auto px-4 py-2 bg-[#ffc907] hover:bg-[#ffc907]/90 text-[#0a1558] font-black uppercase text-xs rounded-lg transition-colors cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#ffc907]"
+              >
+                Choose Medium
+              </button>
+            </article>
+
+            <!-- Hard Level -->
+            <article class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border border-white/10 rounded-xl bg-[#13277d]/90 hover:bg-[#13277d] transition-all">
+              <div class="flex-1">
+                <h3 class="text-base font-bold text-white flex items-center gap-1.5 font-display">
+                  ⚠️ Ocean Outreach 
+                  <span class="text-[9px] px-2 py-0.5 bg-red-500/10 text-red-300 rounded-full font-black uppercase tracking-wider border border-red-500/20">Hard</span>
+                </h3>
+                <p class="text-sky-200/60 text-xs mt-1 leading-relaxed">
+                  Medium mode + 🤖 Trash Thieves / Pollution Hunters who move around the screen to steal the trash before you can pick it! Extremely challenging.
+                </p>
+              </div>
+              <button
+                data-level="hard"
+                type="button"
+                class="w-full sm:w-auto px-4 py-2 bg-[#ffc907] hover:bg-[#ffc907]/90 text-[#0a1558] font-black uppercase text-xs rounded-lg transition-colors cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-[#ffc907]"
+              >
+                Choose Hard
+              </button>
+            </article>
+          </div>
+
+          <button
+            id="backToTitleBtn"
+            type="button"
+            class="w-full mt-6 py-3 px-4 bg-white/5 hover:bg-white/10 text-white/90 font-extrabold border border-white/10 uppercase rounded-lg text-xs tracking-wider transition-colors cursor-pointer select-none flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-white/20"
+          >
+            &larr; Back to Title
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 3: ACTIVE GAME STAGE SCREEN -->
+      <!-- ============================================== -->
+      <div id="gameScreen" class="screen flex-col w-full max-w-5xl mx-auto px-2 py-4 gap-4">
+        
+        <div class="bg-[#0a1558] text-white border-4 border-white/10 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-[280px_1fr] md:grid-rows-[auto_1fr_auto]">
+          
+          <!-- Header Bar -->
+          <header class="col-span-1 lg:col-span-2 bg-[#111f71] border-b border-white/10 p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4 text-center sm:text-left">
+              <div class="w-12 h-12 rounded-full bg-[#ffc907] flex items-center justify-center text-2xl select-none shadow-md">💧</div>
+              <div>
+                <h2 class="text-2xl font-black font-display uppercase tracking-tight leading-none">
+                  Water <span class="text-[#ffc907]">Savior</span>
+                </h2>
+                <p id="gameLevelLabel" class="text-[10px] font-bold uppercase tracking-widest text-sky-300 mt-1">
+                  charity: water campus edition • Easy
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-4" aria-label="Game status indicators">
+              <div class="bg-black/30 rounded-lg px-5 py-2 border border-white/10 min-w-[110px] text-center">
+                <p class="text-[9px] uppercase font-bold text-sky-200/70 tracking-wider">Mission Score</p>
+                <p id="gameScore" class="text-xl font-mono font-bold leading-none mt-1 text-[#ffc907]" aria-live="polite" aria-atomic="true">0</p>
+              </div>
+              <div class="bg-black/30 rounded-lg px-5 py-2 border border-white/10 min-w-[110px] text-center">
+                <p class="text-[9px] uppercase font-bold text-sky-200/70 tracking-wider">Time Remaining</p>
+                <p id="gameTimer" class="text-xl font-mono font-bold leading-none mt-1 text-white" aria-live="polite" aria-atomic="true">01:00</p>
+              </div>
+            </div>
+          </header>
+
+          <!-- Sidebar Information Status Panel -->
+          <aside class="w-full bg-[#13277d] p-6 border-r border-white/10 flex flex-col gap-6 overflow-hidden shrink-0">
+            
+            <!-- Objectives Tracker -->
+            <section aria-labelledby="sidebar-goal">
+              <h3 id="sidebar-goal" class="text-xs font-bold uppercase tracking-widest text-[#ffc907] mb-3">
+                Mission Objectives
+              </h3>
+              <div class="space-y-2.5">
+                <div class="flex items-center gap-2.5 text-xs text-white/90">
+                  <div class="w-2 h-2 rounded-full bg-sky-400"></div>
+                  <span id="objectiveTargetText">Collect 20 items (0/20)</span>
+                </div>
+                <div class="flex items-center gap-2.5 text-xs text-white/90">
+                  <div class="w-2 h-2 rounded-full bg-red-400"></div>
+                  <span id="objectiveHazardText">Avoid storm hazards</span>
+                </div>
+                <div class="flex items-center gap-2.5 text-xs text-white/90">
+                  <div class="w-2 h-2 rounded-full bg-white/40"></div>
+                  <span id="objectiveTimeText">Complete within time limit</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- River Health Progress Bar -->
+            <section class="bg-black/20 rounded-xl p-4 border border-white/5">
+              <div class="flex justify-between items-end mb-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-sky-200/90">
+                  RIVER HEALTH
+                </h3>
+                <p id="riverHealthPercentText" class="text-lg font-mono font-bold text-[#12b7e8]">0%</p>
+              </div>
+              <div class="h-3 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
+                <div 
+                  id="riverHealthBar"
+                  class="h-full rounded-full bg-gradient-to-r from-[#ffc907] via-[#12b7e8] to-[#15bb74] transition-all duration-300"
+                  style="width: 0%;"
+                ></div>
+              </div>
+              <p id="riverHealthStatusText" class="text-[10px] mt-2 text-sky-300 italic">
+                The water is polluted. Clean it up!
+              </p>
+            </section>
+
+            <!-- Achievements locks tracker -->
+            <section>
+              <h3 class="text-xs font-bold uppercase tracking-widest text-white/40 mb-3">
+                Achievements
+              </h3>
+              <div class="grid grid-cols-1 gap-1.5">
+                <div id="badgeStreak" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg border text-[11px] bg-white/5 border-white/5 text-white/30">
+                  <span class="font-bold flex items-center gap-1.5">
+                    🏆 Clean Streak
+                  </span>
+                  <span id="badgeStreakStatus" class="text-[10px] font-black">LOCKED</span>
+                </div>
+                <div id="badgeFast" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg border text-[11px] bg-white/5 border-white/5 text-white/30">
+                  <span class="font-bold flex items-center gap-1.5">
+                    ⚡ Fast Restorer
+                  </span>
+                  <span id="badgeFastStatus" class="text-[10px] font-black">LOCKED</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Mission Milestones Signals Logger -->
+            <section class="flex-1 flex flex-col gap-2 min-h-[140px]">
+              <h3 class="text-xs font-bold uppercase tracking-widest text-white/40 mb-1">
+                Mission Signals
+              </h3>
+              <div id="milestoneSignals" class="space-y-2 max-h-[160px] overflow-y-auto" aria-live="polite">
+                <div class="bg-white/5 rounded-lg p-3 text-[11px] leading-tight text-white/40 italic border-l-4 border-white/10">
+                  Signals will appear as cleanup progress improves.
+                </div>
+              </div>
+            </section>
+
+          </aside>
+
+          <!-- Interactive Play Sandbox Arena -->
+          <main id="mainContent" class="relative p-6 bg-[#253f4c] flex flex-col gap-4 min-w-0 overflow-hidden">
+            
+            <!-- Repeating grid helper lines background -->
+            <div 
+              class="absolute inset-0 opacity-15 pointer-events-none select-none z-0" 
+              style="background-image: repeating-linear-gradient(45deg, transparent, transparent 80px, white 81px, white 82px);"
+            ></div>
+
+            <!-- Feedback ticker -->
+            <div class="relative z-10 bg-black/40 text-sky-200 border border-white/10 py-2 px-4 rounded-xl text-center font-bold text-xs select-none min-h-[36px] flex items-center justify-center gap-2" id="gameFeedback" aria-live="polite" aria-atomic="true">
+              <span class="text-[#ffc907] font-black uppercase tracking-wider">Signals:</span>
+              <span id="gameFeedback-text">Tap floating trash to clean the river!</span>
+            </div>
+
+            <!-- Arena stage box -->
+            <div 
+              id="riverArena"
+              class="relative min-h-[460px] w-full rounded-xl border-2 border-white/10 overflow-hidden select-none transition-all duration-500 shadow-2xl z-10 bg-[#253f4c]"
+              role="region"
+              aria-label="River cleanup simulator. Click trash elements to collect, avoid red lightning and hazardous debris."
+              tabindex="0"
+            >
+              
+              <!-- Arena badge helper guide text -->
+              <div class="absolute top-4 right-4 bg-[#172a88] text-white px-5 py-2 rounded-full text-[11px] font-bold shadow-xl border border-white/20 select-none pointer-events-none z-10">
+                Tap items to clean the river
+              </div>
+
+              <!-- General Hurdle Banner / Environmental Warnings -->
+              <div id="hurdleBanner" class="absolute top-4 left-4 right-auto bg-red-600 text-white px-4 py-2 rounded-full text-[11px] font-extrabold shadow-xl border border-red-400 select-none pointer-events-none z-30 flex items-center gap-2 hidden animate-bounce">
+                <span class="animate-ping inline-flex h-2 w-2 rounded-full bg-yellow-400"></span>
+                <span id="hurdleBannerText">⚠️ HURDLE ACTIVE: EARTHQUAKE TREMOR!</span>
+              </div>
+
+              <!-- Lightning Flash Overlay -->
+              <div id="lightningOverlay" class="absolute inset-0 z-20 pointer-events-none hidden flex-col items-center justify-center bg-yellow-400/25 border-8 border-yellow-300 transition-all">
+                <div class="lightning-flash absolute inset-0"></div>
+                <div class="relative z-10 bg-black/80 px-4 py-2 rounded-lg text-center text-yellow-300 font-bold text-xs flex items-center gap-2 border border-yellow-400">
+                  <span>⚡</span> ELECTRO-SHOCK STUN! CONTROLS SUSPENDED FOR 5S <span>⚡</span>
+                </div>
+              </div>
+
+              <!-- Factory Smoke Fog Overlay -->
+              <div id="smokeOverlay" class="absolute inset-0 z-20 pointer-events-none hidden smoke-fog-overlay flex flex-col items-center justify-center opacity-0 transition-opacity duration-500">
+                <div class="bg-black/80 px-5 py-2.5 rounded-xl text-center text-slate-300 font-bold text-xs flex items-center gap-2 border border-slate-600 shadow-xl">
+                  <span>💨</span> FACTORY SMOKE! RIVER VISION IS COMPROMISED <span>💨</span>
+                </div>
+              </div>
+
+              <!-- Pause State Overlay -->
+              <div id="pauseOverlay" class="absolute inset-0 bg-slate-950/75 hidden flex-col items-center justify-center text-white backdrop-blur-xs select-none z-20">
+                <span class="text-4xl mb-2 animate-pulse">⏸️</span>
+                <h4 class="text-base font-extrabold uppercase tracking-widest font-display text-white">Mission Paused</h4>
+                <p class="text-sky-200/50 text-xs mt-1">Tap resume to restore active stream</p>
+              </div>
+
+            </div>
+
+          </main>
+
+          <!-- Controls Footer navigation -->
+          <nav class="col-span-1 lg:col-span-2 bg-[#050b2d] p-4 flex flex-wrap justify-center gap-3 border-t border-white/5 select-none">
+            <button
+              id="gameHomeBtn"
+              type="button"
+              class="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-lg border border-white/10 transition-colors cursor-pointer flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-white/20"
+            >
+              🏠 Home Screen
+            </button>
+            <button
+              id="gamePauseBtn"
+              type="button"
+              class="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-lg border border-white/10 transition-colors cursor-pointer flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-white/20"
+            >
+              <span id="pauseBtnIcon">⏸️</span> <span id="pauseBtnText">Pause Mission</span>
+            </button>
+            <button
+              id="gameSoundBtn"
+              type="button"
+              class="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-lg border border-white/10 transition-colors cursor-pointer flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-white/20"
+            >
+              <span id="soundIcon">🔊</span> <span id="soundText">Sound On</span>
+            </button>
+            <button
+              id="gameResetBtn"
+              type="button"
+              class="px-4 py-2 bg-[#ffc907] hover:bg-[#ffc907]/90 text-[#0a1558] font-black text-xs uppercase tracking-wider rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 focus:outline-none focus:ring-4 focus:ring-amber-300"
+            >
+              🔄 Reset Stream
+            </button>
+          </nav>
+
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 4: MISSION RESULTS / END GAME SCREEN -->
+      <!-- ============================================== -->
+      <div id="resultsScreen" class="screen flex-col items-center justify-center w-full max-w-md px-4 relative overflow-hidden">
+        
+        <!-- Interactive confetti wrapper dynamic anchor -->
+        <div id="confettiContainer" class="absolute inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+        <div class="w-full bg-[#0a1558] text-white border-4 border-white/10 rounded-2xl shadow-2xl overflow-hidden p-6 sm:p-8 z-10 text-center relative">
+          
+          <p id="resultsEmoji" class="text-4xl mb-2 select-none" role="img" aria-label="trophy">🏆</p>
+          
+          <h2 id="resultsTitle" class="text-2xl font-extrabold uppercase font-display tracking-tight text-white">
+            Mission Complete!
+          </h2>
+          
+          <p id="resultsDesc" class="text-sky-200/60 text-xs mt-1.5 px-4 leading-relaxed">
+            Amazing work! The river has been restored, returning pure drinking water to local species.
+          </p>
+
+          <!-- Metrics stats table row -->
+          <dl class="grid grid-cols-3 gap-3 my-6 text-center select-none" aria-label="Mission results">
+            <div class="bg-black/30 p-3.5 rounded-xl border border-white/5">
+              <dt class="text-[9px] font-black uppercase text-sky-200/60 tracking-wider">Points</dt>
+              <dd id="resultsScore" class="text-lg font-black text-[#ffc907] mt-1 font-mono">0</dd>
+            </div>
+            <div class="bg-black/30 p-3.5 rounded-xl border border-white/5">
+              <dt class="text-[9px] font-black uppercase text-sky-200/60 tracking-wider">Removed</dt>
+              <dd id="resultsRemoved" class="text-lg font-black text-white mt-1 font-mono">0</dd>
+            </div>
+            <div class="bg-black/30 p-3.5 rounded-xl border border-white/5">
+              <dt class="text-[9px] font-black uppercase text-sky-200/60 tracking-wider">Health</dt>
+              <dd id="resultsHealth" class="text-lg font-black text-[#12b7e8] mt-1 font-mono">0%</dd>
+            </div>
+          </dl>
+
+          <!-- Reward promotional coupon -->
+          <div id="rewardCard" class="p-4 rounded-xl text-center mb-6 border select-none bg-[#ffc907] border-white/10 text-[#0a1558]">
+            <strong class="block text-xs uppercase tracking-widest font-black">🔥 Campus Reward Unlocked!</strong>
+            <span class="block text-xs font-black mt-1.5 uppercase tracking-wide">Cafe Drink Code: CLEAN</span>
+          </div>
+
+          <!-- Buttons flow action columns -->
+          <div class="flex flex-col gap-3">
+            <div class="grid grid-cols-2 gap-3">
+              <button
+                id="playAgainBtn"
+                type="button"
+                class="py-3 px-4 bg-[#13277d] hover:bg-[#13277d]/80 text-white font-extrabold uppercase rounded-lg text-xs tracking-wider border border-white/10 transition-colors cursor-pointer flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-white/20"
+              >
+                🔄 Play Again
+              </button>
+              <button
+                id="nextLevelBtn"
+                type="button"
+                class="py-3 px-4 bg-[#ffc907] hover:bg-[#ffc907]/90 text-[#0a1558] font-black uppercase rounded-lg text-xs tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-[#ffc907]"
+              >
+                Next Level &rarr;
+              </button>
+            </div>
+
+            <button
+              id="homeResultsBtn"
+              type="button"
+              class="w-full py-3 px-4 bg-white/5 hover:bg-white/10 text-white font-extrabold uppercase rounded-lg text-xs tracking-wider border border-white/5 transition-colors cursor-pointer flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-white/10"
+            >
+              🏠 Home Screen
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Script loading -->
+    <!-- Footer with charity: water links -->
+    <footer class="w-full py-4 text-center text-xs text-white/60 mt-6" aria-label="Charity links">
+      <p>
+        Built for <strong>charity: water</strong> —
+        <a href="https://www.charitywater.org/" target="_blank" rel="noopener noreferrer" class="underline text-white/80 ml-1 mr-1">Visit charity: water</a>
+        •
+        <a href="https://www.charitywater.org/donate" target="_blank" rel="noopener noreferrer" class="underline text-white/80 ml-1">Donate</a>
+      </p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
